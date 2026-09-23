@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-django_db}
+      MYSQL_USER: ${MYSQL_USER:-django_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-django_password}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - django_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  web:
+    build: .
+    container_name: django_app
+    command: sh -c "python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DEBUG: ${DEBUG:-False}
+      DATABASE_URL: ${DATABASE_URL:-mysql://django_user:django_password@db:3306/django_db}
+      MYSQL_HOST: db
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-django_db}
+      MYSQL_USER: ${MYSQL_USER:-django_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-django_password}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - django_network
+
+volumes:
+  mysql_data:
+
+networks:
+  django_network:
+    driver: bridge
