@@ -22,21 +22,48 @@ cp .env.example .env
 docker-compose build
 ```
 
-### 4. Inicie os containers
+### 4. Configure o domínio para produção
+No `.env`, defina `DEBUG=False`, gere um `SECRET_KEY` forte e substitua `DOMAIN`,
+`ALLOWED_HOSTS` e `CSRF_TRUSTED_ORIGINS` pelo domínio público. Configure os registros
+DNS `A`/`AAAA` desse domínio para o IP do servidor e libere as portas TCP 80 e 443.
+
+### 5. Inicie os containers
 ```bash
 docker-compose up -d
 ```
 
 As migrações serão executadas automaticamente ao iniciar.
 
-### 5. Crie um superusuário (administrador)
+O Nginx inicia com um certificado temporário apenas enquanto o certificado real não é
+emitido. Ele é substituído no próximo passo.
+
+### 6. Emita o certificado HTTPS
+Substitua o e-mail e use o domínio definido em `DOMAIN`:
+```bash
+docker-compose --profile certbot run --rm certbot certonly --webroot \
+	--webroot-path /var/www/certbot \
+	--email admin@seu-dominio.com \
+	--agree-tos --no-eff-email \
+	-d seu-dominio.com
+docker-compose restart nginx
+```
+
+Após a emissão, renove periodicamente e recarregue o Nginx:
+```bash
+docker-compose --profile certbot run --rm certbot renew
+docker-compose exec nginx nginx -s reload
+```
+Agende os dois comandos acima diariamente no agendador do servidor; o Certbot só
+renova quando o certificado estiver próximo de expirar.
+
+### 7. Crie um superusuário (administrador)
 ```bash
 docker-compose exec web python manage.py createsuperuser
 ```
 
-### 6. Acesse a aplicação
-- **Aplicação**: http://localhost:8000
-- **Painel Admin**: http://localhost:8000/admin
+### 8. Acesse a aplicação
+- **Aplicação**: https://seu-dominio.com
+- **Painel Admin**: https://seu-dominio.com/admin
 
 ## Comandos úteis
 
@@ -116,6 +143,10 @@ As variáveis de ambiente podem ser modificadas no arquivo `.env`:
 
 - `DEBUG`: True/False (modo debug)
 - `SECRET_KEY`: Chave secreta do Django
+- `DOMAIN`: Domínio público usado pelo Nginx e Certbot
+- `ALLOWED_HOSTS`: Domínios aceitos pelo Django, separados por vírgula
+- `CSRF_TRUSTED_ORIGINS`: Origens HTTPS aceitas pelo Django, separadas por vírgula
+- `SECURE_SSL_REDIRECT`: Redireciona requisições HTTP para HTTPS
 - `MYSQL_DATABASE`: Nome do banco de dados
 - `MYSQL_USER`: Usuário do MySQL
 - `MYSQL_PASSWORD`: Senha do MySQL
