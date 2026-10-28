@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Confirmar exclusao | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card narrow">
+    <h2>Confirmar exclusao</h2>
+    <p>Tem certeza que deseja excluir <strong>{{ object }}</strong>?</p>
+    <form method="post" class="button-row">
+        {% csrf_token %}
+        <button type="submit" class="button danger">Excluir</button>
+        <a href="javascript:history.back()" class="button secondary">Cancelar</a>
+    </form>
+</section>
+{% endblock %}

@@ -1,0 +1,51 @@
+from django.urls import path
+
+from .views import (
+    DashboardView,
+    DistributionBatchCreateView,
+    DistributionBatchDeleteView,
+    DistributionBatchDetailView,
+    DistributionBatchListView,
+    DistributionBatchUpdateView,
+    DistributionGroupCreateView,
+    DistributionGroupDeleteView,
+    DistributionGroupListView,
+    DistributionGroupUpdateView,
+    HomeRedirectView,
+    MessageTemplateCreateView,
+    MessageTemplateDeleteView,
+    MessageTemplateListView,
+    MessageTemplateUpdateView,
+    PromotionCreateView,
+    PromotionDeleteView,
+    PromotionDetailView,
+    PromotionListView,
+    PromotionUpdateView,
+    QuickCreateView,
+)
+
+app_name = 'operations'
+
+urlpatterns = [
+    path('', HomeRedirectView.as_view(), name='home'),
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),
+    path('promocoes/', PromotionListView.as_view(), name='promotions-list'),
+    path('promocoes/nova/', PromotionCreateView.as_view(), name='promotions-create'),
+    path('promocoes/<int:pk>/', PromotionDetailView.as_view(), name='promotions-detail'),
+    path('promocoes/<int:pk>/editar/', PromotionUpdateView.as_view(), name='promotions-update'),
+    path('promocoes/<int:pk>/excluir/', PromotionDeleteView.as_view(), name='promotions-delete'),
+    path('grupos/', DistributionGroupListView.as_view(), name='groups-list'),
+    path('grupos/novo/', DistributionGroupCreateView.as_view(), name='groups-create'),
+    path('grupos/<int:pk>/editar/', DistributionGroupUpdateView.as_view(), name='groups-update'),
+    path('grupos/<int:pk>/excluir/', DistributionGroupDeleteView.as_view(), name='groups-delete'),
+    path('lotes/', DistributionBatchListView.as_view(), name='batches-list'),
+    path('lotes/novo/', DistributionBatchCreateView.as_view(), name='batches-create'),
+    path('lotes/<int:pk>/', DistributionBatchDetailView.as_view(), name='batches-detail'),
+    path('lotes/<int:pk>/editar/', DistributionBatchUpdateView.as_view(), name='batches-update'),
+    path('lotes/<int:pk>/excluir/', DistributionBatchDeleteView.as_view(), name='batches-delete'),
+    path('modelos-mensagem/', MessageTemplateListView.as_view(), name='templates-list'),
+    path('modelos-mensagem/novo/', MessageTemplateCreateView.as_view(), name='templates-create'),
+    path('modelos-mensagem/<int:pk>/editar/', MessageTemplateUpdateView.as_view(), name='templates-update'),
+    path('modelos-mensagem/<int:pk>/excluir/', MessageTemplateDeleteView.as_view(), name='templates-delete'),
+    path('criacao-rapida/', QuickCreateView.as_view(), name='quick-create'),
+]

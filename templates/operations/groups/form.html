@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Formulario de grupo | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>{% if object %}Editar grupo{% else %}Novo grupo{% endif %}</h2>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% include 'operations/partials/form_fields.html' %}
+        <div class="button-row">
+            <button type="submit" class="button">Salvar</button>
+            <a class="button secondary" href="{% url 'operations:groups-list' %}">Cancelar</a>
+            {% if object %}
+                <a class="button secondary" href="{% url 'operations:groups-delete' object.pk %}">Excluir</a>
+            {% endif %}
+        </div>
+    </form>
+</section>
+{% endblock %}

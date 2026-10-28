@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card narrow">
+    <h2>Acesso ao sistema</h2>
+    <p>Entre com seu usuario para acessar as telas operacionais.</p>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="alert error">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <label>
+            Usuario
+            {{ form.username }}
+        </label>
+        <label>
+            Senha
+            {{ form.password }}
+        </label>
+        <button type="submit" class="button">Entrar</button>
+    </form>
+</section>
+{% endblock %}

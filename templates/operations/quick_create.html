@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Criacao rapida | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>Criacao rapida</h2>
+    <p>Cadastre uma promocao e um lote inicial em um unico fluxo.</p>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% include 'operations/partials/form_fields.html' %}
+        <button type="submit" class="button">Criar promocao e lote</button>
+    </form>
+</section>
+{% endblock %}

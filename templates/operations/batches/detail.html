@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhe do lote | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="title-row">
+        <h2>Lote #{{ batch.pk }}</h2>
+        <div class="button-row">
+            <a class="button" href="{% url 'operations:batches-update' batch.pk %}">Editar</a>
+            <a class="button secondary" href="{% url 'operations:batches-delete' batch.pk %}">Excluir</a>
+        </div>
+    </div>
+    <dl class="details-grid">
+        <dt>Promocao</dt><dd>{{ batch.promotion.title }}</dd>
+        <dt>Status</dt><dd>{{ batch.get_status_display }}</dd>
+        <dt>Agendado para</dt><dd>{{ batch.scheduled_for|date:'d/m/Y H:i' }}</dd>
+        <dt>Criado por</dt><dd>{{ batch.created_by.username }}</dd>
+    </dl>
+    <h3>Mensagem congelada</h3>
+    <pre class="snapshot">{{ batch.message_snapshot }}</pre>
+
+    <h3>Destinos e status de envio</h3>
+    <table>
+        <thead>
+            <tr><th>Grupo</th><th>Plataforma</th><th>Status</th><th>Enviado em</th><th>Erro</th></tr>
+        </thead>
+        <tbody>
+            {% for target in targets %}
+                <tr>
+                    <td>{{ target.group.name }}</td>
+                    <td>{{ target.group.get_platform_display }}</td>
+                    <td>{{ target.get_status_display }}</td>
+                    <td>{{ target.sent_at|date:'d/m/Y H:i'|default:'-' }}</td>
+                    <td>{{ target.error_message|default:'-' }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Nenhum destino configurado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

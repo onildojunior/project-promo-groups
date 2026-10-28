@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="grid-cards">
+    <article class="card">
+        <h3>Promocoes por status</h3>
+        <ul>
+            {% for item in promotion_totals %}
+                <li>{{ item.status }}: {{ item.total }}</li>
+            {% empty %}
+                <li>Nenhuma promocao cadastrada.</li>
+            {% endfor %}
+        </ul>
+    </article>
+    <article class="card">
+        <h3>Destinos por status</h3>
+        <ul>
+            {% for item in target_status_totals %}
+                <li>{{ item.status }}: {{ item.total }}</li>
+            {% empty %}
+                <li>Nenhum destino registrado.</li>
+            {% endfor %}
+        </ul>
+    </article>
+    <article class="card">
+        <h3>Atalhos rapidos</h3>
+        <div class="button-row">
+            <a class="button" href="{% url 'operations:promotions-create' %}">Nova promocao</a>
+            <a class="button" href="{% url 'operations:batches-create' %}">Novo lote</a>
+            <a class="button" href="{% url 'operations:quick-create' %}">Criacao rapida</a>
+        </div>
+    </article>
+</section>
+
+<section class="grid-cards">
+    <article class="card">
+        <h3>Promocoes recentes</h3>
+        <table>
+            <thead>
+                <tr><th>Titulo</th><th>Parceiro</th><th>Status</th><th>Atualizado</th></tr>
+            </thead>
+            <tbody>
+                {% for promotion in recent_promotions %}
+                    <tr>
+                        <td><a href="{% url 'operations:promotions-detail' promotion.pk %}">{{ promotion.title }}</a></td>
+                        <td>{{ promotion.partner.name }}</td>
+                        <td>{{ promotion.get_status_display }}</td>
+                        <td>{{ promotion.updated_at|date:'d/m/Y H:i' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Sem promocoes recentes.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <article class="card">
+        <h3>Lotes recentes</h3>
+        <table>
+            <thead>
+                <tr><th>ID</th><th>Promocao</th><th>Status</th><th>Agendado</th></tr>
+            </thead>
+            <tbody>
+                {% for batch in recent_batches %}
+                    <tr>
+                        <td><a href="{% url 'operations:batches-detail' batch.pk %}">#{{ batch.pk }}</a></td>
+                        <td>{{ batch.promotion.title }}</td>
+                        <td>{{ batch.get_status_display }}</td>
+                        <td>{{ batch.scheduled_for|date:'d/m/Y H:i' }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4">Sem lotes recentes.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </article>
+    <article class="card">
+        <h3>Falhas recentes de envio</h3>
+        <ul>
+            {% for target in failed_targets %}
+                <li>
+                    Lote #{{ target.batch_id }} - {{ target.group.name }}
+                    {% if target.error_message %} ({{ target.error_message }}){% endif %}
+                </li>
+            {% empty %}
+                <li>Nenhuma falha registrada.</li>
+            {% endfor %}
+        </ul>
+    </article>
+</section>
+{% endblock %}

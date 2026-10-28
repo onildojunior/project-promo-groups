@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Detalhe da promocao | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="title-row">
+        <h2>{{ promotion.title }}</h2>
+        <div class="button-row">
+            <a class="button" href="{% url 'operations:promotions-update' promotion.pk %}">Editar</a>
+            <a class="button secondary" href="{% url 'operations:promotions-delete' promotion.pk %}">Excluir</a>
+        </div>
+    </div>
+    <dl class="details-grid">
+        <dt>Parceiro</dt><dd>{{ promotion.partner.name }}</dd>
+        <dt>Status</dt><dd>{{ promotion.get_status_display }}</dd>
+        <dt>Origem</dt><dd>{{ promotion.get_source_display }}</dd>
+        <dt>Preco atual</dt><dd>{{ promotion.current_price }}</dd>
+        <dt>Preco anterior</dt><dd>{{ promotion.previous_price|default:'-' }}</dd>
+        <dt>URL original</dt><dd><a href="{{ promotion.original_url }}" target="_blank" rel="noopener">Abrir</a></dd>
+        <dt>URL afiliada</dt><dd>{% if promotion.affiliate_url %}<a href="{{ promotion.affiliate_url }}" target="_blank" rel="noopener">Abrir</a>{% else %}-{% endif %}</dd>
+        <dt>Descricao</dt><dd>{{ promotion.description|default:'-' }}</dd>
+    </dl>
+</section>
+{% endblock %}

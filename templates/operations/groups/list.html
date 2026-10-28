@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Grupos | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="title-row">
+        <h2>Grupos de distribuicao</h2>
+        <a class="button" href="{% url 'operations:groups-create' %}">Novo grupo</a>
+    </div>
+    <form method="get" class="filter-grid">
+        <input type="text" name="q" placeholder="Buscar por nome/referencia" value="{{ filters.q }}">
+        <select name="platform">
+            <option value="">Todas as plataformas</option>
+            {% for value, label in platform_choices %}
+                <option value="{{ value }}" {% if filters.platform == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="is_active">
+            <option value="">Todos</option>
+            <option value="true" {% if filters.is_active == 'true' %}selected{% endif %}>Ativo</option>
+            <option value="false" {% if filters.is_active == 'false' %}selected{% endif %}>Inativo</option>
+        </select>
+        <button type="submit" class="button">Filtrar</button>
+    </form>
+    <table>
+        <thead>
+            <tr><th>Nome</th><th>Plataforma</th><th>Referencia</th><th>Ativo</th><th>Acoes</th></tr>
+        </thead>
+        <tbody>
+            {% for group in groups %}
+                <tr>
+                    <td>{{ group.name }}</td>
+                    <td>{{ group.get_platform_display }}</td>
+                    <td>{{ group.external_reference|default:'-' }}</td>
+                    <td>{% if group.is_active %}Sim{% else %}Nao{% endif %}</td>
+                    <td>
+                        <a href="{% url 'operations:groups-update' group.pk %}">Editar</a> |
+                        <a href="{% url 'operations:groups-delete' group.pk %}">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Nenhum grupo encontrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'operations/partials/pagination.html' %}
+</section>
+{% endblock %}

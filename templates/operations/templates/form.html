@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Formulario de modelo | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <h2>{% if object %}Editar modelo de mensagem{% else %}Novo modelo de mensagem{% endif %}</h2>
+    <p>Campos suportados: <code>{title}</code>, <code>{current_price}</code>, <code>{previous_price}</code>, <code>{description}</code> e <code>{affiliate_url}</code>.</p>
+    <form method="post" class="form-grid">
+        {% csrf_token %}
+        {% include 'operations/partials/form_fields.html' %}
+        <div class="button-row">
+            <button type="submit" class="button">Salvar</button>
+            <a class="button secondary" href="{% url 'operations:templates-list' %}">Cancelar</a>
+            {% if object %}
+                <a class="button secondary" href="{% url 'operations:templates-delete' object.pk %}">Excluir</a>
+            {% endif %}
+        </div>
+    </form>
+</section>
+{% endblock %}

@@ -18,6 +18,8 @@ integracoes de envio e APIs oficiais serao adicionadas em etapas posteriores.
 - Cadastro de grupos de distribuicao para WhatsApp e Telegram.
 - Lotes de distribuicao com varios destinos e estado individual por grupo, preparados
   para futuras tentativas, falhas e automacao de entrega.
+- Interface operacional web autenticada com dashboard, CRUD de promocoes, grupos,
+  lotes/mensagens enviadas, modelos de mensagem e fluxo de criacao rapida.
 - Validacoes para impedir que uma promocao sem URL afiliada seja marcada como revisada
   ou agendada, e que um lote seja agendado sem uma promocao revisada e uma mensagem
   congelada.
@@ -25,8 +27,20 @@ integracoes de envio e APIs oficiais serao adicionadas em etapas posteriores.
 
 ## Fluxo operacional inicial
 
-O Admin Django e a interface da primeira versao. Depois de criar um superusuario,
-acesse `/admin/` e siga este fluxo:
+A interface web principal agora fica na raiz (`/`) e exige autenticacao. Depois de
+criar um superusuario, acesse `/login/` e siga este fluxo:
+
+1. Consulte o dashboard para acompanhar status de promocoes, lotes e destinos com
+	falha.
+2. Use `Promocoes` para cadastrar/revisar ofertas e controlar status.
+3. Use `Grupos` para manter canais de destino por plataforma.
+4. Use `Mensagens/Lotes` para acompanhar historico de envios por destino
+	(`BatchTarget`), com status individual.
+5. Use `Modelos de mensagem` para manter textos por parceiro/canal.
+6. Use `Criacao rapida` para abrir promocao e lote inicial em um unico fluxo.
+
+O Admin Django segue disponivel em `/admin/` como apoio administrativo. Se preferir o
+fluxo original por Admin, voce pode continuar com:
 
 1. Cadastre um parceiro, por exemplo Amazon, AliExpress, Mercado Livre ou Shopee,
 	informando os dominios que ele aceita.

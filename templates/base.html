@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Promo Groups{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+</head>
+<body>
+    <div class="app-shell">
+        {% if request.user.is_authenticated %}
+            <aside class="sidebar">
+                <h1>Promo Groups</h1>
+                <nav>
+                    <a href="{% url 'operations:dashboard' %}">Dashboard</a>
+                    <a href="{% url 'operations:promotions-list' %}">Promocoes</a>
+                    <a href="{% url 'operations:groups-list' %}">Grupos</a>
+                    <a href="{% url 'operations:batches-list' %}">Mensagens/Lotes</a>
+                    <a href="{% url 'operations:templates-list' %}">Modelos de mensagem</a>
+                    <a href="{% url 'operations:quick-create' %}">Criacao rapida</a>
+                    <a href="{% url 'admin:index' %}">Admin Django</a>
+                </nav>
+            </aside>
+        {% endif %}
+        <main class="content">
+            {% if request.user.is_authenticated %}
+                <header class="topbar">
+                    <div>Ola, {{ request.user.username }}</div>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="button secondary">Sair</button>
+                    </form>
+                </header>
+            {% endif %}
+            {% include 'operations/partials/messages.html' %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>

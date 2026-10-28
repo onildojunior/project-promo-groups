@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}Promocoes | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="title-row">
+        <h2>Promocoes</h2>
+        <a class="button" href="{% url 'operations:promotions-create' %}">Nova promocao</a>
+    </div>
+    <form method="get" class="filter-grid">
+        <input type="text" name="q" placeholder="Buscar por titulo ou URL" value="{{ filters.q }}">
+        <select name="status">
+            <option value="">Todos os status</option>
+            {% for value, label in status_choices %}
+                <option value="{{ value }}" {% if filters.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="source">
+            <option value="">Todas as origens</option>
+            {% for value, label in source_choices %}
+                <option value="{{ value }}" {% if filters.source == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <select name="partner">
+            <option value="">Todos os parceiros</option>
+            {% for partner in partners %}
+                <option value="{{ partner.id }}" {% if filters.partner == partner.id|stringformat:'s' %}selected{% endif %}>{{ partner.name }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="button">Filtrar</button>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Parceiro</th>
+                <th>Preco atual</th>
+                <th>Status</th>
+                <th>Origem</th>
+                <th>Acoes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for promotion in promotions %}
+                <tr>
+                    <td><a href="{% url 'operations:promotions-detail' promotion.pk %}">{{ promotion.title }}</a></td>
+                    <td>{{ promotion.partner.name }}</td>
+                    <td>{{ promotion.current_price }}</td>
+                    <td>{{ promotion.get_status_display }}</td>
+                    <td>{{ promotion.get_source_display }}</td>
+                    <td>
+                        <a href="{% url 'operations:promotions-update' promotion.pk %}">Editar</a> |
+                        <a href="{% url 'operations:promotions-delete' promotion.pk %}">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="6">Nenhuma promocao encontrada.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'operations/partials/pagination.html' %}
+</section>
+{% endblock %}

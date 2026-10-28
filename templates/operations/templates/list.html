@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Modelos de mensagem | Promo Groups{% endblock %}
+
+{% block content %}
+<section class="card">
+    <div class="title-row">
+        <h2>Modelos de mensagem</h2>
+        <a class="button" href="{% url 'operations:templates-create' %}">Novo modelo</a>
+    </div>
+    <form method="get" class="filter-grid">
+        <select name="channel">
+            <option value="">Todos os canais</option>
+            {% for value, label in channel_choices %}
+                <option value="{{ value }}" {% if filters.channel == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit" class="button">Filtrar</button>
+    </form>
+    <table>
+        <thead>
+            <tr><th>Parceiro</th><th>Canal</th><th>Ativo</th><th>Atualizado</th><th>Acoes</th></tr>
+        </thead>
+        <tbody>
+            {% for item in message_templates %}
+                <tr>
+                    <td>{{ item.partner.name|default:'Padrao' }}</td>
+                    <td>{{ item.get_channel_display }}</td>
+                    <td>{% if item.is_active %}Sim{% else %}Nao{% endif %}</td>
+                    <td>{{ item.updated_at|date:'d/m/Y H:i' }}</td>
+                    <td>
+                        <a href="{% url 'operations:templates-update' item.pk %}">Editar</a> |
+                        <a href="{% url 'operations:templates-delete' item.pk %}">Excluir</a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Nenhum modelo encontrado.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% include 'operations/partials/pagination.html' %}
+</section>
+{% endblock %}
